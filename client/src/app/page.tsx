@@ -1,7 +1,24 @@
 "use client";
 
-import axios from "axios";
 import React, { useState } from "react";
+import axios from "axios";
+import ReactMarkdown from 'react-markdown';
+import rehypeHighlight from 'rehype-highlight';
+import 'highlight.js/styles/github.css';
+
+type Props = {
+  content: string;
+};
+
+const MarkdownRenderer: React.FC<Props> = ({ content }) => {
+  return (
+    <div className="prose prose-neutral dark:prose-invert max-w-none">
+      <ReactMarkdown rehypePlugins={[rehypeHighlight]}>
+        {content}
+      </ReactMarkdown>
+    </div>
+  );
+};
 
 export default function Home() {
   const [prompt, setPrompt] = useState("");
@@ -45,12 +62,12 @@ export default function Home() {
         ></textarea>
         <button
           type="submit"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold p-4 mt-4 rounded text-xl"
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold p-4 my-4 rounded text-xl"
         >
           Generate Promp
         </button>
         {loading && <div className="text-xl mt-4">Loading...</div>}
-        {text && <p className="mt-4">{text}</p>}
+        {text && <MarkdownRenderer content={text} />}
       </form>
     </div>
   );
