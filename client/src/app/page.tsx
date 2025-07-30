@@ -1,23 +1,57 @@
 "use client";
 
 import axios from "axios";
+import React, { useState } from "react";
 
 export default function Home() {
-  const handleGeneratePrompt = async () => {
+  const [prompt, setPrompt] = useState("");
+  const [text, setText] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleGeneratePrompt = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!prompt) return;
+    setLoading(true);
     const data = {
-      contents: "Explain how AI works in less than 100 words"
+      contents: prompt
     };
-    const res = await axios.post("http://localhost:4000/api/prompt", data, {
-      headers: {
-        "Content-Type": "application/json"
-      }
-    });
-    console.log(res.data);
+    try {
+      const res = await axios.post("http://localhost:4000/api/prompt", data, {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+      setText(res.data.text);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
   };
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <div>Hello World!</div>
-      <button onClick={handleGeneratePrompt}>Generate Promp</button>
+    <div className="font-sans grid items-center justify-items-center min-h-screen p-8 pb-20 sm:p-20">
+      <div className="text-3xl mb-4">Testing AI Connection</div>
+      <form
+        className="flex flex-col w-3/5 mx-auto"
+        onSubmit={(e) => handleGeneratePrompt(e)}
+      >
+        <textarea
+          name="prompt"
+          id="prompt"
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
+          className="border border-gray-300 rounded-md p-2 bg-gray-800 w-full h-32"
+        ></textarea>
+        <button
+          type="submit"
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold p-4 mt-4 rounded text-xl"
+        >
+          Generate Promp
+        </button>
+        {loading && <div className="text-xl mt-4">Loading...</div>}
+        {text && <p className="mt-4">{text}</p>}
+      </form>
     </div>
   );
 }
