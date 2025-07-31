@@ -1,4 +1,5 @@
 const express = require("express");
+const fs = require("fs");
 const { upload } = require("../middleware/upload");
 const { generatePromptFlow } = require("../services/geminiAIService.js");
 
@@ -9,14 +10,7 @@ router.post("/", upload.single("file"), async (req, res) => {
     const prompt = req.body.prompt;
     const filePath = req.file?.path;
 
-    const contents = {
-      parts: [
-        { text: prompt },
-        filePath && { inlineData: { mimeType: req.file.mimetype, data: filePath } },
-      ].filter(Boolean),
-    };
-
-    const response = await generatePromptFlow(contents);
+    const response = await generatePromptFlow(prompt, filePath);
     res.json({ text: response });
   } catch (err) {
     console.log("Prompt error", err);

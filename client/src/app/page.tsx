@@ -92,9 +92,9 @@ export default function Home() {
         </div>
         <button
           type="submit"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold p-4 rounded text-xl"
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold p-4 rounded text-xl cursor-pointer transition-colors duration-300"
         >
-          Generate Promp
+          Generate Prompt
         </button>
         {loading && <div className="text-xl mt-4">Loading...</div>}
         {text && <MarkdownRenderer content={text} />}
